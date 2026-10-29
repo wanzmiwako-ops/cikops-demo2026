@@ -1,0 +1,40 @@
+/* FM COMMAND CENTER — akses data (RPC migrasi 028 + ringkasan NC dari G-C). Tanpa login. */
+
+import { supabase } from "../supabaseClient";
+import type { FmSnapshot, NcBoard, RcpBoard, TgaBoard } from "./model";
+
+function friendly(error: { code?: string; message?: string }): Error {
+  if (error.code === "PGRST202" || error.code === "42883" || /Could not find the function|does not exist/i.test(error.message ?? "")) {
+    return new Error("FM Command Center belum aktif — jalankan supabase/01_dasar.sql (bagian 028) di Supabase.");
+  }
+  return new Error(error.message ?? String(error));
+}
+
+/** Data berjalan (hari ini + bulan berjalan) Fleet, Gate, Kantin, ATK. */
+export async function getFmSnapshot(): Promise<FmSnapshot> {
+  const { data, error } = await supabase.rpc("get_fm_snapshot");
+  if (error) throw friendly(error);
+  return data as FmSnapshot;
+}
+
+/** Pelanggaran / NC bulan berjalan dari G-C (jumlah, jenis, transporter — tanpa data driver). */
+export async function getNcBoard(): Promise<NcBoard> {
+  const r = await fetch("/api/gc-nc?board=1", { cache: "no-store" });
+  const j = (await r.json().catch(() => null)) as (NcBoard & { error?: string }) | null;
+  if (!r.ok || !j || !j.ok) throw new Error(j?.error || `Data pelanggaran tidak tersedia (${r.status})`);
+  return j;
+}
+
+/** Ringkasan Receptionist (migrasi 031) — tanpa nama orang & password. Belum dimigrasi → null. */
+export async function getRcpBoard(): Promise<RcpBoard | null> {
+  const { data, error } = await supabase.rpc("rcp_board");
+  if (error) return null;
+  return data as RcpBoard;
+}
+
+/** Ringkasan TGA (04_aplikasi_lapangan.sql bagian 048) — tanpa data pribadi. Belum dipasang → null. */
+export async function getTgaBoard(): Promise<TgaBoard | null> {
+  const { data, error } = await supabase.rpc("tga_board");
+  if (error) return null;
+  return data as TgaBoard;
+}
