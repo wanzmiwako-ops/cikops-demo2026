@@ -26,6 +26,13 @@ Sistem ini mencakup tiga jenis "gudang" yang dimiliki SML: **gudang suku cadang*
 
 Pilihan cabang di kanan atas mengubah data yang ditampilkan.
 
+### Fitur antarmuka
+
+- **Pencarian cepat:** tekan `Ctrl K` (Mac: `⌘K`) atau `/` untuk mencari part, unit, work order, dan halaman.
+- **Rekomendasi otomatis** di dashboard: saran transfer antar-cabang, draft PO, unit jatuh tempo PM, dan baterai lemah.
+- **Tema terang / gelap / ikut sistem** lewat tombol di kanan atas.
+- **Responsif:** sidebar bisa diciutkan di desktop, menjadi menu geser di tablet/HP, dan tabel berubah menjadi kartu di layar kecil.
+
 ## Mengganti warna brand
 
 Buka `index.html`, lalu ubah token di bagian paling atas `<style>`:
