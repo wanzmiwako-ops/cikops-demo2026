@@ -1,32 +1,42 @@
-# CIKOPS — Facility Management Plant Cikarang
+# SML Warehouse — Mockup & Demo
 
-Satu aplikasi untuk operasional GA/FM: fleet & driver, klaim & dana operasional,
-fasilitas (locker, gift, printer, ATK, kantin, receptionist), Cleaning & Gardening + TGA,
-Security (tersinkron dengan Security Desk G4S), report manajemen, dan Command Center.
+Prototipe sistem **Warehouse Internal** untuk PT Sarana Mitra Luas Tbk (SML), perusahaan sewa forklift.
+Sistem ini mencakup tiga jenis "gudang" yang dimiliki SML: **gudang suku cadang**, **yard unit forklift**, dan **baterai**.
 
-- **Teknologi:** Next.js 16 (App Router) di Vercel · Supabase (Postgres, Auth, Realtime, Edge Functions)
-- **Aplikasi lapangan:** `/driver`, `/tga` (juga tersedia sebagai APK)
-- **Tanpa login:** `/request`, `/bukti`, `/locker`, `/gift`, `/canteen`, `/gate`, `/dashboard-viewonly`
+> Status: **mockup konsep untuk diskusi internal**. Semua data adalah contoh (dummy). Warna dan logo masih placeholder sampai ada panduan brand resmi.
 
-## Struktur
-| Folder | Isi |
+## Cara membuka
+
+- **Lokal:** unduh repo, lalu buka `index.html` di browser (Chrome/Edge). Tidak perlu instalasi.
+- **Online:** aktifkan GitHub Pages (Settings → Pages → Branch `main` / root), atau impor repo ini ke Vercel sebagai situs statis.
+
+## Isi demo
+
+| Menu | Yang bisa dicoba |
 |---|---|
-| `src/app/dashboard/` | Dashboard staf, satu file per modul (`*Tab.tsx`) |
-| `src/app/<halaman>/` | Halaman publik & aplikasi driver/TGA |
-| `src/lib/` | Akses data per modul (`api.ts`, `ga/`, `security/`, `receptionist/`, `tga/`, `mgmtReport/` …) |
-| `supabase/01_dasar.sql` | Semua migrasi lama (sudah berjalan di production) |
-| `supabase/02_peran_keamanan.sql` | Role per modul + pengetatan keamanan (**jalankan sekarang**) |
-| `supabase/03_data_impor.sql` | Impor data lama sekali pakai |
-| `supabase/cek_audit_keamanan.sql` | Pemeriksaan keamanan (hanya membaca) |
-| `supabase/functions/` | Edge Function (email, notifikasi, akun staf) |
-| `vba/` | Modul Excel (GA, ATK). Salinan unduhan ada di `public/downloads/` |
+| Dashboard | Nilai stok, SKU di bawah minimum, utilisasi armada, jatuh tempo PM, mutasi stok terakhir |
+| Stok Part | Filter & cari, kartu stok per part, lokasi rak, lot/kedaluwarsa, label QR |
+| Penerimaan | PO tiba → karantina QC → QC lulus & putaway |
+| Pengeluaran ke WO | Pick part untuk work order (saran rak FEFO), biaya part per WO |
+| Transfer Cabang | Buat, kirim, terima transfer (status IN-TRANSIT) |
+| Stock Opname | Hitung fisik, selisih & nilai, ajukan penyesuaian |
+| Unit Yard | Status setiap forklift, hour meter, progres PM, riwayat, ubah status |
+| Baterai | SoH, siklus, lithium vs lead-acid |
+| Aplikasi Scan (HP) | Simulasi aplikasi lapangan: scan part → ambil untuk WO, scan unit → inspeksi |
 
-## Dokumentasi
-- **`docs/PANDUAN.md`**: file SQL, Edge Function & secret, env Vercel, langkah per modul, backup & pemulihan, dan pindah akun Supabase/GitHub
-- Riwayat perubahan: `git log`
+Pilihan cabang di kanan atas mengubah data yang ditampilkan.
 
-## Menjalankan lokal
-```bash
-npm install
-NEXT_PUBLIC_SUPABASE_URL=... NEXT_PUBLIC_SUPABASE_ANON_KEY=... npm run dev
+## Mengganti warna brand
+
+Buka `index.html`, lalu ubah token di bagian paling atas `<style>`:
+
+```css
+--brand:#0E2C52;   /* warna utama perusahaan (sidebar, header) */
+--accent:#F5B400;  /* warna tombol aksi */
 ```
+
+Ubah juga nilai yang sama di dua blok mode gelap tepat di bawahnya.
+
+## Dokumen
+
+- [`docs/RANCANGAN.md`](docs/RANCANGAN.md): rancangan sistem (modul, model data, alur proses, role, tahapan pembangunan).
